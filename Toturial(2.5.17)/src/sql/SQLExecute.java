@@ -163,11 +163,10 @@ public class SQLExecute {
 	private static void getConnection() throws ClassNotFoundException, SQLException {
 		String user = "di82";
 		String password = "hV2oQcsM";
-		String url = "jdbc:postresql://castle.ewi.utwente.nl:5432/di82";
-		// ?user=" + user + "&password=" + password;
+		String url = "jdbc:postgresql://castle.ewi.utwente.nl:5432/di82"; //?user=" + user + "&password=" + password;
 		Class.forName("org.postgresql.Driver");
 		con = DriverManager.getConnection(url, user, password);
-		SQLExecute.execute("PRAGMA foreign_keys = ON");
+		// SQLExecute.execute("PRAGMA foreign_keys = ON");
 		// initialize();
 	}
 }
