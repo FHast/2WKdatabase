@@ -1,6 +1,5 @@
 package sql;
 
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import sql.exceptions.InvalidParameterTypeException;
-import sql.exceptions.NoQueryFoundException;
 
 public class SQLExecute {
 
@@ -163,47 +161,13 @@ public class SQLExecute {
 	 * @throws SQLException
 	 */
 	private static void getConnection() throws ClassNotFoundException, SQLException {
-		Class.forName("org.sqlite.JDBC");
+		String user = "di82";
+		String password = "hV2oQcsM";
 		String url = "jdbc:postresql://castle.ewi.utwente.nl:5432/di82";
-		con = DriverManager.getConnection("jdbc:sqlite:Userdata.db");
+		// ?user=" + user + "&password=" + password;
+		Class.forName("org.postgresql.Driver");
+		con = DriverManager.getConnection(url, user, password);
 		SQLExecute.execute("PRAGMA foreign_keys = ON");
 		// initialize();
 	}
-
-	/**
-	 * If the database is not correctly set up, all tables are dropped and
-	 * re-created using the createDatabase.sql script.
-	 */
-	private static void initialize() {
-		if (!hasData) {
-			hasData = true;
-
-			Statement state;
-			try {
-				state = con.createStatement();
-				ResultSet res = state
-						.executeQuery("SELECT name FROM sqlite_master WHERE type ='table' AND name='Transactions'");
-
-				if (!res.next()) {
-					System.out.println("Creating database tables...");
-					for (String s : SQLfileReader.getQueries("src/SQL/createDatabase.sql")) {
-						state = con.createStatement();
-						state.execute(s);
-					}
-					System.out.println("Creation finished.");
-					System.out.println("Filling database...");
-					SQLdatabaseFillService.main(null);
-					System.out.println("finished.");
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (NoQueryFoundException e) {
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				// createDatabase.sql is missing
-				e.printStackTrace();
-			}
-		}
-	}
-
 }
